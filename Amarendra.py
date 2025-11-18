@@ -1,69 +1,75 @@
+board = [
+    "1", "2", "3",
+    "4", "5", "6",
+    "7", "8", "9"
+]
 
-def simple_calculator(expression_str):
-    """
-    Performs a simple calculation (+, -, *, /) based on a string input 
-    like "5 + 3". It requires exactly two numbers and one operator.
-    """
-    
-   
-    print(f"Input Expression: **{expression_str}**")
-    
-    
-    elements = expression_str.split()
-    
-    
-    if len(elements) != 3:
-        return "**Error:** Invalid format. Please use 'number operator number' (e.g., '5 + 3')."
-    
-    
-    num1_str, operator, num2_str = elements[0], elements[1], elements[2]
-    
-    
-    try:
-        num1 = float(num1_str)
-        num2 = float(num2_str)
-    except ValueError:
-        return "**Error:** Invalid number input."
+winning_moves = (
+    (0, 1, 2),
+    (3, 4, 5),
+    (6, 7, 8),
+    (0, 3, 6),
+    (1, 4, 7),
+    (2, 5, 8),
+    (0, 4, 8),
+    (2, 4, 6)
+)
 
+def display_board():
+    print("\n" + "="*13)
+    print(f" {board[0]} | {board[1]} | {board[2]} ")
+    print("-----------")
+    print(f" {board[3]} | {board[4]} | {board[5]} ")
+    print("-----------")
+    print(f" {board[6]} | {board[7]} | {board[8]} ")
+    print("="*13 + "\n")
+
+def check_winner(player):
+    for a, b, c in winning_moves:
+        if board[a] == board[b] == board[c] == player:
+            return True
+    return False
+
+def check_draw():
+    return all(pos in ("X", "O") for pos in board)
+
+def get_player_move(current_player):
+    while True:
+        choice = input(f"Player {current_player}, choose a position (1-9): ").strip()
+
+        if not (choice.isdigit() and '1' <= choice <= '9'):
+            print("Invalid input. Please enter a number from 1 to 9.")
+            continue
+        
+        if choice in board:
+            return choice
+        else:
+            print("That position is already taken! Try again.")
+
+print("=== TIC TAC TOE ===")
+print("Player 1 = X")
+print("Player 2 = O")
+
+display_board()
+
+current_player = "X"
+
+while True:
     
-    valid_operators = ('+', '-', '*', '/')
+    choice = get_player_move(current_player)
+
+    index = board.index(choice)
     
-    if operator not in valid_operators:
-        return f"**Error:** Invalid operator. Use one of {valid_operators}."
+    board[index] = current_player
 
-    
-    result = None
-    
-    if operator == '+':
-        result = num1 + num2
-    elif operator == '-':
-        result = num1 - num2
-    elif operator == '*':
-        result = num1 * num2
-    elif operator == '/':
-       
-        if num2 == 0:
-            return "**Error:** Cannot divide by zero."
-        result = num1 / num2
-    
-    return result
+    display_board()
 
+    if check_winner(current_player):
+        print(f"🎉 Player {current_player} wins!")
+        break
 
+    if check_draw():
+        print("It's a draw!")
+        break
 
-print("\n--- Example 1 (Addition) ---")
-
-input_add = "15.5 + 4.5" 
-output_add = simple_calculator(input_add)
-print(f"Result: {output_add}")
-
-print("\n--- Example 2 (Multiplication) ---")
-
-input_mul = "7 * 6" 
-output_mul = simple_calculator(input_mul)
-print(f"Result: {output_mul}")
-
-print("\n--- Example 3 (Error Handling - Invalid Operator) ---")
-
-input_invalid = "10 ^ 2" 
-output_invalid = simple_calculator(input_invalid)
-print(f"Result: {output_invalid}")
+    current_player = "O" if current_player == "X" else "X"
