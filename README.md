@@ -1,2 +1,2 @@
-# calculator
-code for calulator
+Tic tac toe
+code for tic tac toe
